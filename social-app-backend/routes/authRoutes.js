@@ -31,7 +31,7 @@ const router = express.Router();
  *               password:
  *                 type: string
  *     responses:
- *       200:
+ *       201:
  *         description: User registered successfully
  */
 
@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
         await user.save();
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, user: { id: user._id, username, email } });
+        res.status(201).json({ token, user: { id: user._id, username, email } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }

@@ -10,7 +10,6 @@ describe('Posts API', () => {
     let userId;
 
     beforeAll(async () => {
-        server = app.listen(5003);
 
         // Register a test user
         const userRes = await request(app).post('/api/auth/register').send({
@@ -27,7 +26,6 @@ describe('Posts API', () => {
         await User.deleteMany();
         await Post.deleteMany();
         await mongoose.connection.close();
-        server.close();
     });
 
     test('✅ Should create a post', async () => {

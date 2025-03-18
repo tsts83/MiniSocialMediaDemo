@@ -10,85 +10,54 @@ A backend API for a social media app with **authentication, user posts, and test
 - ✅ Unit & Integration Testing with Jest & Supertest  
 - ✅ Uses MongoDB Atlas for Cloud Database  
 
----
-2️⃣ Install Dependencies
-sh
-Másolás
-Szerkesztés
+## 2️⃣ Install Dependencies
+
+First, clone the repository:
+
+```bash
+git clone https://github.com/your-username/social-app-backend.git
+cd social-app-backend
+```
+
+
+Install the required dependencies using npm:
+
+```bash
 npm install
-3️⃣ Setup Environment Variables
-Create a .env file in the root directory and add:
+```
 
-plaintext
-Másolás
-Szerkesztés
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/social_app?retryWrites=true&w=majority
-TEST_MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/test_db?retryWrites=true&w=majority
-JWT_SECRET=your_jwt_secret
+Make sure to create a .env file in the root directory of your project and add the following environment variables:
+
+```env
+MONGO_URI=your-mongo-db-uri
+JWT_SECRET=your-jwt-secret
 PORT=5002
-🔹 Replace <username> and <password> with your MongoDB Atlas credentials.
-🔹 The TEST_MONGO_URI should point to a separate test database.
+```
 
-🚀 Running the Server
-For Development Mode (with Nodemon)
-sh
-Másolás
-Szerkesztés
+## 3️⃣ Running the Application
+
+To run the application in development mode, use the following command:
+
+```bash
 npm run dev
-For Production Mode
-sh
-Másolás
-Szerkesztés
-npm start
-Once running, the API will be available at:
+```
 
-arduino
-Másolás
-Szerkesztés
-http://localhost:5002/
-📖 API Documentation (Swagger)
-You can access the Swagger API documentation at:
+This will start the server on the port specified in the .env file (default is 5002). You can access the API at: 
+```bash
+http://localhost:5002
+```
 
-bash
-Másolás
-Szerkesztés
+The application uses MongoDB as the database, and the connection string is pulled from the environment variable MONGO_URI.
+
+You can also access the Swagger API documentation at:
+```bash
 http://localhost:5002/api-docs
-This allows you to test endpoints directly from your browser.
+```
 
-🧪 Running Tests
-This project includes unit tests for authentication and posts.
+Running in Production
+To run the application in production, use the following command:
+```bash
+npm start
+```
+Make sure to set the environment variable NODE_ENV=production in your .env file or through your hosting provider.
 
-Run Tests
-sh
-Másolás
-Szerkesztés
-npm test
-📌 API Endpoints
-🔹 Authentication
-Method	Endpoint	Description
-POST	/api/auth/register	Register a new user
-POST	/api/auth/login	Login and receive a JWT token
-🔹 Posts
-Method	Endpoint	Description
-POST	/api/posts	Create a post (Requires Auth)
-GET	/api/posts	Get all posts
-GET	/api/posts/:id	Get a single post by ID
-DELETE	/api/posts/:id	Delete a post (Requires Auth)
-🔹 Note: When making authenticated requests, send the JWT token in the Authorization header:
-
-makefile
-Másolás
-Szerkesztés
-Authorization: Bearer <your_token>
-📜 Folder Structure
-bash
-Másolás
-Szerkesztés
-/social-app-backend
-│── /models        # Mongoose schemas
-│── /routes        # Express API routes
-│── /tests         # Jest test files
-│── server.js      # Main server entry point
-│── .env           # Environment variables
-│── .gitignore     # Ignore node_modules and .env
-│── README.md      # Documentation

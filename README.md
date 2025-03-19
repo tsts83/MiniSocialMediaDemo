@@ -52,6 +52,7 @@ The application uses MongoDB as the database, and the connection string is pulle
 You can also access the Swagger API documentation at:
 ```bash
 http://localhost:5002/api-docs
+http://localhost:5002/swagger.json
 ```
 
 Running in Production

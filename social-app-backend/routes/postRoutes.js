@@ -1,7 +1,11 @@
 const express = require('express');
+const multer = require('multer');
 const authMiddleware = require('../middleware/authMiddleware');
 const Post = require('../models/Post');
+const fs = require('fs');
 const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
+
 
 /**
  * @swagger
@@ -15,34 +19,61 @@ const router = express.Router();
  * /api/posts:
  *   post:
  *     summary: Create a new post
- *     tags: [Posts]
+ *     description: Create a post with an optional image upload.
+ *     tags:
+ *       - Posts
  *     security:
  *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - text
  *             properties:
  *               text:
  *                 type: string
- *                 example: "This is my first post!"
+ *               image:
+ *                 type: string
+ *                 format: binary
  *     responses:
- *       200:
+ *       201:
  *         description: Post created successfully
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Server error
  */
-
-// Create a post
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     try {
-        const newPost = new Post({ user: req.user.id, text: req.body.text });
+        const { text } = req.body;
+        let imageBase64 = null;
+
+        // Convert uploaded image to Base64 if provided
+        if (req.file) {
+            const imagePath = `uploads/${req.file.filename}`;
+            const image = fs.readFileSync(imagePath);
+            imageBase64 = image.toString('base64');
+            // You may want to delete the image after conversion
+            fs.unlinkSync(imagePath);
+        }
+
+        const newPost = new Post({
+            user: req.user.id,
+            text,
+            image: imageBase64 || null
+        });
+
         const post = await newPost.save();
-        res.json(post);
+        res.status(201).json(post);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+module.exports = router;
 
 /**
  * @swagger
@@ -89,10 +120,17 @@ router.get('/', async (req, res) => {
 router.put('/:id/like', authMiddleware, async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
-        if (!post.likes.includes(req.user.id)) {
-            post.likes.push(req.user.id);
-            await post.save();
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
         }
+
+        if (post.likes.includes(req.user.id)) {
+            return res.status(400).json({ message: 'You have already liked this post' });
+        }
+
+        post.likes.push(req.user.id);
+        await post.save();
+
         res.json(post);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -125,7 +163,7 @@ router.put('/:id/like', authMiddleware, async (req, res) => {
  *                 type: string
  *                 example: "Nice post!"
  *     responses:
- *       200:
+ *       201:
  *         description: Comment added successfully
  */
 
@@ -135,7 +173,7 @@ router.post('/:id/comment', authMiddleware, async (req, res) => {
         const post = await Post.findById(req.params.id);
         post.comments.push({ user: req.user.id, text: req.body.text });
         await post.save();
-        res.json(post);
+        res.status(201).json(post);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }

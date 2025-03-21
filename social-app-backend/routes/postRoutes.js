@@ -51,24 +51,33 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         const { text } = req.body;
         let imageBase64 = null;
 
-        // Convert uploaded image to Base64 if provided
+        // Process image only if uploaded
         if (req.file) {
-            const imagePath = `uploads/${req.file.filename}`;
-            const image = fs.readFileSync(imagePath);
-            imageBase64 = image.toString('base64');
-            // You may want to delete the image after conversion
-            fs.unlinkSync(imagePath);
+            const mimeType = req.file.mimetype; // Get the file MIME type
+            if (!['image/jpeg', 'image/png'].includes(mimeType)) {
+                return res.status(400).json({ message: 'Only JPEG and PNG images are allowed.' });
+            }
+
+            // Read image and convert to Base64
+            const image = fs.readFileSync(req.file.path);
+            imageBase64 = `data:${mimeType};base64,${image.toString('base64')}`;
+
+            // Delete image after conversion
+            fs.unlinkSync(req.file.path);
         }
 
+        // Create new post
         const newPost = new Post({
             user: req.user.id,
             text,
-            image: imageBase64 || null
+            image: imageBase64
         });
 
         const post = await newPost.save();
+        console.log('Post uploaded');
         res.status(201).json(post);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -87,10 +96,15 @@ module.exports = router;
  */
 
 // Get all posts
-router.get('/', async (req, res) => {
+router.get('/',authMiddleware, async (req, res) => {
     try {
-        const posts = await Post.find().populate('user', ['username']);
+        const posts = await Post.find()
+            .populate("user", "username") // Populates the post author
+            .populate("comments.user", "username") // Populates comment authors
+            .sort({ createdAt: -1 })  // Sort by createdAt in descending order (newest first)
+            .exec();
         res.json(posts);
+        
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -131,6 +145,7 @@ router.put('/:id/like', authMiddleware, async (req, res) => {
         post.likes.push(req.user.id);
         await post.save();
 
+        console.log('Post liked by: %s', post.user);
         res.json(post);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -173,6 +188,7 @@ router.post('/:id/comment', authMiddleware, async (req, res) => {
         const post = await Post.findById(req.params.id);
         post.comments.push({ user: req.user.id, text: req.body.text });
         await post.save();
+        console.log('Comment added by: %s', post.user);
         res.status(201).json(post);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

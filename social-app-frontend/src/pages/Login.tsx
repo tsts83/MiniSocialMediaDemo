@@ -1,8 +1,11 @@
 // Login.tsx
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';  // Import the useDispatch hook
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../api/auth';  // Import the loginUser function
+import { RootState } from '../store/store';
 import { LoginCredentials } from '../api/auth';  // Import the type for credentials
+import { useNavigate } from "react-router-dom";
+import { loginSuccess } from "../store/authSlice";
 
 const Login = () => {
   const [formData, setFormData] = useState<LoginCredentials>({ email: '', password: '' });
@@ -10,24 +13,40 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();  // Access the dispatch function from Redux
 
+  // Get user state from Redux store
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  // Log user state whenever it changes
+  useEffect(() => {
+    console.log('User state updated:', user);
+  }, [user]);
+
   // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
+  // Handle form submissionconst Login = () => {
+  const navigate = useNavigate(); // Initialize navigation
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      // Dispatch the loginUser action with credentials and dispatch
-      await loginUser(formData, dispatch);
-      setLoading(false);  // Stop loading on success
+      const userData = await loginUser(formData, dispatch);
+      dispatch(loginSuccess(userData)); // Ensure this contains { user, token }
+
+
+      if (userData) {
+        console.log("Login successful:", userData);
+        navigate("/feed"); // Redirect to feed page after login
+      }
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
-      setLoading(false);  // Stop loading on error
+      setError("Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 

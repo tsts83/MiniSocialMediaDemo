@@ -180,3 +180,385 @@ button:disabled {
     width: 90%;
   }
 }
+
+.logout-button {
+  background-color: rgb(2, 6, 209);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: darkred;
+}
+
+/* Feed Container */
+.feed-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Post Card Styles */
+.post-card {
+  background-color: #ffffff;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+  margin-bottom: 15px;
+}
+
+.post-header strong {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.post-header p {
+  font-size: 1em;
+  color: #555;
+  margin-top: 5px;
+}
+
+.post-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+/* Likes */
+.post-card p {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 10px;
+}
+
+.post-card p:hover {
+  color: #007bff;
+}
+
+/* Comments Section */
+.comments-section {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+}
+
+.comments-section h4 {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+}
+
+.comment {
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #e9e9e9;
+  border-radius: 5px;
+}
+
+.comment strong {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.comment p {
+  font-size: 0.95em;
+  color: #444;
+  margin: 5px 0 0;
+}
+
+.no-comments {
+  color: #888;
+  font-style: italic;
+}
+
+/* Loaders and Empty States */
+.loading-posts {
+  text-align: center;
+  font-size: 1.2em;
+  color: #999;
+}
+
+.posts-list {
+  margin-top: 20px;
+}
+
+.posts-list p {
+  font-size: 1.1em;
+  color: #444;
+  text-align: center;
+}
+
+.posts-list p.no-posts {
+  color: #999;
+}
+
+/* Post footer to handle the layout of like button */
+.post-footer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.like-button {
+  background-color: #f0f0f0;
+  color: #333; /* Ensure the text is visible by default */
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.like-button.liked {
+  background-color: #ff4500; /* Change background to a red-like color when liked */
+  color: white;  /* Text color stays white */
+}
+
+.like-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.like-button:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.like-button span {
+  margin-left: 5px;
+}
+
+
+/* Add some space between the posts */
+.post-card {
+  margin-bottom: 20px;
+}
+
+/* Adjusting the post content */
+.post-card p {
+  margin: 8px 0;
+}
+/* Post Card */
+.post-card {
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* Post Header */
+.post-header {
+  margin-bottom: 10px;
+}
+
+/* Post Image */
+.post-image {
+  width: 100%;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+/* Post Footer */
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Like Button */
+.like-button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.like-button:hover {
+  background-color: #f0f0f0;
+}
+
+.like-button:disabled {
+  cursor: not-allowed;
+  background-color: #e0e0e0;
+  border-color: #ddd;
+}
+
+/* Comment Section */
+.comments-section {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.comments-list {
+  margin-bottom: 10px;
+}
+
+.comment {
+  margin-bottom: 10px;
+}
+
+.comment-input {
+  display: flex;
+  align-items: center;
+}
+
+.comment-input input {
+  padding: 8px;
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.comment-input button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.comment-input button:hover {
+  background-color: #0056b3;
+}
+
+/* Create Post Form */
+.create-post-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-post-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.create-post-form input[type="file"] {
+  margin-top: 10px;
+}
+
+.create-post-form button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.create-post-form button:hover {
+  background-color: #0056b3;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .create-post-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .posts-list {
+    padding: 10px;
+  }
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.about-section {
+  margin-top: 50px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.about-section h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.about-section p {
+  font-size: 16px;
+  color: #555;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.navbar .logo {
+  cursor: pointer; /* Makes the logo clickable */
+}
+
+.nav-link {
+  margin: 0 10px;
+}
+
+.page-title {
+  font-size: 30px;
+  margin: 20px 0;
+  text-align: center;
+}

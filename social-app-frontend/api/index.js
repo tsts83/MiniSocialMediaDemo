@@ -4,7 +4,7 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 const swaggerDocs = require('./config/swagger');
 // Comment the following line when running backend locally
-// const { VercelRequest, VercelResponse } = require('@vercel/node');
+const { VercelRequest, VercelResponse } = require('@vercel/node');
 
 const app = express();
 

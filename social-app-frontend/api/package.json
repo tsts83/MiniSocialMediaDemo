@@ -8,15 +8,18 @@
     "dev": "nodemon server.js"
   },
   "jest": {
-    "testEnvironment": "node",  
-    "verbose": false            
+    "testEnvironment": "node",
+    "verbose": false
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@cloudinary/react": "^1.14.1",
+    "@cloudinary/url-gen": "^1.21.0",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",

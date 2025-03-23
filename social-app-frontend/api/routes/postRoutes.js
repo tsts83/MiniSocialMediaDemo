@@ -2,10 +2,19 @@ const express = require('express');
 const multer = require('multer');
 const authMiddleware = require('../middleware/authMiddleware');
 const Post = require('../models/Post');
-const fs = require('fs');
+const stream = require('stream');
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const cloudinary = require('cloudinary').v2;
+const storage = multer.memoryStorage(); // Store file in memory to upload to Cloudinary
+const upload = multer({ storage: storage }).single('image'); // Single file upload with field name 'image'
 
+// Cloudinary configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    api_option: 'debug'
+});
 
 /**
  * @swagger
@@ -46,42 +55,67 @@ const upload = multer({ dest: 'uploads/' });
  *       500:
  *         description: Server error
  */
-router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+
+router.post('/', authMiddleware, upload, async (req, res) => {
     try {
         const { text } = req.body;
-        let imageBase64 = null;
+        let imageUrl = null;  // Variable to store the image URL after uploading to Cloudinary
 
-        // Process image only if uploaded
+        // Check if a file was uploaded
         if (req.file) {
-            const mimeType = req.file.mimetype; // Get the file MIME type
+            const mimeType = req.file.mimetype;
+
+            // Only allow JPEG and PNG images
             if (!['image/jpeg', 'image/png'].includes(mimeType)) {
                 return res.status(400).json({ message: 'Only JPEG and PNG images are allowed.' });
             }
 
-            // Read image and convert to Base64
-            const image = fs.readFileSync(req.file.path);
-            imageBase64 = `data:${mimeType};base64,${image.toString('base64')}`;
+            // Create a readable stream from the file buffer (to send to Cloudinary)
+            const bufferStream = new stream.PassThrough();
+            bufferStream.end(req.file.buffer);
 
-            // Delete image after conversion
-            fs.unlinkSync(req.file.path);
+            // Upload image to Cloudinary
+            const result = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    {
+                        resource_type: 'image',  // Set the resource type to image
+                        folder: 'social-app',    // Optional: Specify folder in Cloudinary
+                        upload_preset: 'social-app',  // Use the custom upload preset you've created
+                        public_id: `post-${Date.now()}`,  // Custom public ID, or you can let Cloudinary auto-generate it
+                    },
+                    (error, result) => {
+                        if (error) {
+                            console.error('Error uploading to Cloudinary:', error);
+                            reject(error);  // Reject the promise if there's an error
+                        }
+                        resolve(result);  // Resolve with the result if upload is successful
+                    }
+                ).end(req.file.buffer);  // Pipe the buffer to Cloudinary uploader stream
+            });
+
+            // Get the secure URL from Cloudinary's response
+            imageUrl = result.secure_url;
         }
 
-        // Create new post
+        // Create a new post with the image URL
         const newPost = new Post({
             user: req.user.id,
             text,
-            image: imageBase64
+            image: imageUrl
         });
 
+        // Save the post to the database
         const post = await newPost.save();
-        console.log('Post uploaded');
+        console.log('Post uploaded:', post);
+
+        // Respond with the created post
         res.status(201).json(post);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error during post creation:', error);
+        // Ensure that the error response is helpful
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
-
 module.exports = router;
 
 /**

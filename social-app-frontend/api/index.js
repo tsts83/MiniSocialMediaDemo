@@ -11,14 +11,25 @@ const app = express();
 // Connect to DB
 connectDB();
 
-// CORS setup
-const corsOptions = {
-    origin: process.env.API_URL,  // Allow only your frontend domain
+// Enable CORS
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',  
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-};
+    credentials: true // Allow sending credentials (cookies, auth headers)
+}));
 
-app.use(cors(corsOptions));  // Use the CORS middleware with the defined options
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    
+    next();
+});
 
 app.use(express.json());
 

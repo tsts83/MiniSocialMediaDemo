@@ -24,7 +24,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 
-console.log('VITE_API_URL:', process.env.VITE_API_URL);
+console.log('VITE_API_URL:', process.env.API_URL);
 console.log('Node environment:', process.env.NODE_ENV);
 console.log('MongoDB URI:', process.env.MONGO_URI);
 
@@ -33,7 +33,7 @@ swaggerDocs(app);
 
 // If we're not running on Vercel, start the server locally
 if (process.env.NODE_ENV !== 'production') {
-    const port = process.env.PORT || 5002;
+    const port = process.env.PORT;
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);
     });

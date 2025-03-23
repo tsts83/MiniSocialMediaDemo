@@ -1,6 +1,6 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const apiUrl = process.env.VITE_API_URL;
+const apiUrl = process.env.API_URL;
 
 
 const options = {

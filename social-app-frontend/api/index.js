@@ -3,8 +3,6 @@ const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const swaggerDocs = require('./config/swagger');
-// Remove VercelRequest and VercelResponse since you don't need them
-const { VercelRequest, VercelResponse } = require('@vercel/node');
 
 const app = express();
 

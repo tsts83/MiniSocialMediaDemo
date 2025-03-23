@@ -18,7 +18,7 @@ export interface RegisterData {
 export const loginUser = async (credentials: LoginCredentials, dispatch: AppDispatch) => {
     try {
       dispatch(loginStart());
-      const res = await axios.post(`${API_URL}/auth/login`, credentials);
+      const res = await axios.post(`${API_URL}/api/auth/login`, credentials);
       dispatch(loginSuccess(res.data));  // Dispatch the success action with the response data
       return res.data;
     } catch (error: any) {
@@ -29,7 +29,7 @@ export const loginUser = async (credentials: LoginCredentials, dispatch: AppDisp
 
 export const registerUser = async (userData: RegisterData) => {
   try {
-    const res = await axios.post(`${API_URL}/auth/register`, userData);
+    const res = await axios.post(`${API_URL}/api/auth/register`, userData);
     return res.data;
   } catch (error: any) {
     return { error: error.response.data.message };

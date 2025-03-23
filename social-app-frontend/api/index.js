@@ -11,12 +11,14 @@ const app = express();
 // Connect to DB
 connectDB();
 
-// Enable CORS
-app.use(cors({
-    origin: '*',  
+// CORS setup
+const corsOptions = {
+    origin: process.env.API_URL,  // Allow only your frontend domain
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));  // Use the CORS middleware with the defined options
 
 app.use(express.json());
 
@@ -43,3 +45,13 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = (req, res) => {
     return app(req, res);
 };
+
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+module.exports = cloudinary;

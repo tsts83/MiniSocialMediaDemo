@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 // Fetch posts
 export const fetchPosts = async (token: string) => {
   try {
-    const response = await axios.get(`${API_URL}/posts`, {
+    const response = await axios.get(`${API_URL}/api/posts`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -20,7 +20,7 @@ export const fetchPosts = async (token: string) => {
 export const likePost = async (postId: string, token: string) => {
   try {
     const response = await axios.put(
-      `${API_URL}/posts/${postId}/like`,
+      `${API_URL}/api/posts/${postId}/like`,
       {},
       {
         headers: {
@@ -40,7 +40,7 @@ export const likePost = async (postId: string, token: string) => {
 export const addComment = async (postId: string, commentText: string, token: string) => {
   try {
     const response = await axios.post(
-      `${API_URL}/posts/${postId}/comment`,
+      `${API_URL}/api/posts/${postId}/comment`,
       { text: commentText },
       {
         headers: {
@@ -58,7 +58,7 @@ export const addComment = async (postId: string, commentText: string, token: str
 // Create a post
 export const createPost = async (postData: FormData, token: string) => {
   try {
-    const res = await axios.post(`${API_URL}/posts`, postData, {
+    const res = await axios.post(`${API_URL}/api/posts`, postData, {
       headers: {
         Authorization: `Bearer ${token}`
       },

@@ -1,5 +1,7 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const apiUrl = process.env.VITE_API_URL;
+
 
 const options = {
     definition: {
@@ -10,7 +12,7 @@ const options = {
             description: 'API documentation for the social media app',
         },
         servers: [
-            { url: 'http://localhost:5002', description: 'Local server' }
+            { url: apiUrl, description: 'Local server' }
         ],
         components: {
             securitySchemes: {

@@ -3,15 +3,16 @@ const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const swaggerDocs = require('./config/swagger');
+//const { VercelRequest, VercelResponse } = require('@vercel/node');
 
-const app = express();  // Create the app instance
+const app = express();
 
 // Connect to DB
 connectDB();
 
 // Enable CORS
 app.use(cors({
-    origin: '*',  // Allow all origins
+    origin: '*',  
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -25,11 +26,15 @@ app.use('/api/posts', require('./routes/postRoutes'));
 // Swagger API Docs
 swaggerDocs(app);
 
-// Only start the server if not in test mode
-if (process.env.NODE_ENV !== 'test') {
-    app.listen(process.env.PORT || 5002, () => {
-        console.log(`Server running on port ${process.env.PORT || 5002}`);
+// If we're not running on Vercel, start the server locally
+if (process.env.NODE_ENV !== 'production') {
+    const port = process.env.PORT || 5002;
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
     });
 }
 
-module.exports = app;  // Export the app for testing
+// Instead, export the Express app as a serverless function
+module.exports = (req, res) => {
+    return app(req, res);
+};

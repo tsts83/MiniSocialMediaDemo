@@ -13,21 +13,20 @@ connectDB();
 
 // Enable CORS
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',  
+    origin: process.env.FRONTEND_URL,  
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true // Allow sending credentials (cookies, auth headers)
 }));
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     
     if (req.method === 'OPTIONS') {
         return res.sendStatus(200);
     }
-    
     next();
 });
 
@@ -40,6 +39,7 @@ app.use('/api/posts', require('./routes/postRoutes'));
 console.log('VITE_API_URL:', process.env.API_URL);
 console.log('Node environment:', process.env.NODE_ENV);
 console.log('MongoDB URI:', process.env.MONGO_URI);
+console.log('MongoDB URI:', process.env.FRONTEND_URL);
 
 // Swagger API Docs
 swaggerDocs(app);

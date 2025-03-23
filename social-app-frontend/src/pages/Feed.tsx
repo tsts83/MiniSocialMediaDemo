@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchPosts, likePost, addComment, createPost } from '../api/posts';
-import logo from '../assets/logo.png';
 
 const Feed = () => {
   const user = useSelector((state: any) => state.auth.user);

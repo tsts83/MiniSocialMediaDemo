@@ -4,7 +4,7 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 const swaggerDocs = require('./config/swagger');
 //Comment the following line when running backend locally
-const { VercelRequest, VercelResponse } = require('@vercel/node');
+//const { VercelRequest, VercelResponse } = require('@vercel/node');
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.use('/api/posts', require('./routes/postRoutes'));
 
 console.log('VITE_API_URL:', process.env.VITE_API_URL);
 console.log('Node environment:', process.env.NODE_ENV);
+console.log('MongoDB URI:', process.env.MONGO_URI);
 
 // Swagger API Docs
 swaggerDocs(app);

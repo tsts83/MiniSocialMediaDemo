@@ -8,6 +8,11 @@ const swaggerDocs = require('./config/swagger');
 
 const app = express();
 
+console.log('VITE_API_URL:', process.env.API_URL);
+console.log('Node environment:', process.env.NODE_ENV);
+console.log('MongoDB URI:', process.env.MONGO_URI);
+console.log('MongoDB URI:', process.env.FRONTEND_URL);
+
 // Connect to DB
 connectDB();
 
@@ -35,11 +40,6 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
-
-console.log('VITE_API_URL:', process.env.API_URL);
-console.log('Node environment:', process.env.NODE_ENV);
-console.log('MongoDB URI:', process.env.MONGO_URI);
-console.log('MongoDB URI:', process.env.FRONTEND_URL);
 
 // Swagger API Docs
 swaggerDocs(app);

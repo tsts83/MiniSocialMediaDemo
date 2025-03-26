@@ -1,64 +1,70 @@
-# **Social App Backend 🚀**
-A backend API for a social media app with **authentication, user posts, and testing** using **Node.js, Express, MongoDB, and JWT authentication**.
+### Mini Social Media Demo
+This is a simple Mini Social Media Application with full-stack functionality. It includes both frontend and backend code in the same repository. The backend API resides in the /api directory, and the frontend is in the root directory.
 
----
+## Features
+User registration and authentication (JWT-based)
 
-## **📌 Features**
-- ✅ User Authentication (Register/Login with JWT)  
-- ✅ Create, Read, and Manage Posts  
-- ✅ Swagger API Documentation  
-- ✅ Unit & Integration Testing with Jest & Supertest  
-- ✅ Uses MongoDB Atlas for Cloud Database  
+Post creation, including text and image uploads (via Cloudinary)
 
-## 2️⃣ Install Dependencies
+Display posts and user details
 
-First, clone the repository:
+Give likes to posts
 
+Client-side interactions with the API
+
+Responsive design using React.js
+
+## Technologies Used
+Frontend: React.js, Vite
+
+Backend: Express.js
+
+Database: MongoDB (via MongoDB Atlas)
+
+Cloud Storage: Cloudinary (for image uploads)
+
+Authentication: JWT (JSON Web Tokens)
+
+## Setup
+# 1. Clone the repository
+
+git clone [https://github.com/yourusername/mini-social-media-demo.git
+cd mini-social-media-demo
+# 2. Backend Setup
+Step 1: Install Backend Dependencies
+Navigate to the /api folder and install the necessary dependencies for the backend:
 ```bash
-git clone https://github.com/your-username/social-app-backend.git
-cd social-app-backend
-```
-
-
-Install the required dependencies using npm:
-
-```bash
+cd api
 npm install
 ```
 
-Make sure to create a .env file in the root directory of your project and add the following environment variables:
+Step 2: Start the Backend Server
+From the /api directory, run:
 
-```env
-MONGO_URI=your-mongo-db-uri
-JWT_SECRET=your-jwt-secret
-PORT=5002
+```bash
+npm run dev
+```
+This will start the backend on http://localhost:5002
+
+# 3. Frontend Setup
+Step 1: Install Frontend Dependencies
+Navigate to the root directory and install the frontend dependencies:
+
+```bash
+cd ..
+npm install
 ```
 
-## 3️⃣ Running the Application
-
-To run the application in development mode, use the following command:
+Step 2: Start the Frontend Development Server
+In the root directory, run:
 
 ```bash
 npm run dev
 ```
 
-This will start the server on the port specified in the .env file (default is 5002). You can access the API at: 
+API Documentation
+For detailed API documentation, you can access the Swagger UI at:
+
 ```bash
-http://localhost:5002
+http://localhost:5002/api/api-docs
 ```
-
-The application uses MongoDB as the database, and the connection string is pulled from the environment variable MONGO_URI.
-
-You can also access the Swagger API documentation at:
-```bash
-http://localhost:5002/api-docs
-http://localhost:5002/swagger.json
-```
-
-Running in Production
-To run the application in production, use the following command:
-```bash
-npm start
-```
-Make sure to set the environment variable NODE_ENV=production in your .env file or through your hosting provider.
-

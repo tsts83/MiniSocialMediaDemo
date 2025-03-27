@@ -22,27 +22,26 @@ jobs:
           - 27017:27017
 
     steps:
-      - name: 🛎 Checkout Repository
+      - name: ⬇️ Checkout repository
         uses: actions/checkout@v3
 
-      - name: 📂 Change to frontend directory
-        working-directory: social-app-frontend
-        run: echo "Running commands inside social-app-frontend"
-
       - name: 🔧 Set Up Node.js
-        working-directory: social-app-frontend
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'  
+          cache: 'npm'  # Speeds up dependency installation
 
       - name: 📦 Install Dependencies
-        working-directory: social-app-frontend
-        run: npm install --legacy-peer-deps
+        run: |
+          cd social-app-frontend
+          npm install --legacy-peer-deps
 
-      - name: 🚀 Run All Tests (Backend + Frontend)
-        working-directory: social-app-frontend
+      - name: 🧪 Run Tests
         env:
           MONGO_URI: mongodb+srv://tsts83:sOupl8IcsnCZUDj1@cluster0.8zjrx.mongodb.net/test_db?retryWrites=true&w=majority&appName=Cluster0
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        run: npm test
+
+        run: |
+          cd social-app-frontend
+          npm test
+        

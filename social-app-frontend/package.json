@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:frontend": "jest --config jest.frontend.config.cjs",  
-    "test:backend": "jest --config jest.backend.config.cjs",  
-    "test": "npm run test:frontend && npm run test:backend" 
+    "test:frontend": "jest --config jest.frontend.config.cjs",
+    "test:backend": "jest --config jest.backend.config.cjs",
+    "test": "npm run test:frontend && npm run test:backend"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",

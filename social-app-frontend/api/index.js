@@ -6,11 +6,6 @@ const swaggerDocs = require('./config/swagger');
 
 const app = express();
 
-console.error('VITE_API_URL:', process.env.API_URL);
-console.error('Node environment:', process.env.NODE_ENV);
-console.error('MongoDB URI:', process.env.MONGO_URI);
-console.error('Frontend URI:', process.env.FRONTEND_URL);
-
 // Connect to DB
 connectDB();
 
@@ -43,7 +38,7 @@ app.use('/api/posts', require('./routes/postRoutes'));
 swaggerDocs(app);
 
 // If we're not running on Vercel, start the server locally
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV == 'development') {
     const port = process.env.PORT;
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);
@@ -64,3 +59,6 @@ module.exports = cloudinary;
 module.exports = (req, res) => {
     return app(req, res);
 };
+
+// Export app for testing
+module.exports = app;

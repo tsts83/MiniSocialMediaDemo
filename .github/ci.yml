@@ -1,0 +1,41 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: 🛎 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔧 Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🚀 Run All Tests (Backend + Frontend)
+        working-directory: ./social-app-frontend
+        env:
+          MONGO_URI: mongodb+srv://tsts83:sOupl8IcsnCZUDj1@cluster0.8zjrx.mongodb.net/test_db?retryWrites=true&w=majority&appName=Cluster0
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: npm test

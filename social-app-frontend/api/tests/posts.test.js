@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../server');
+const app = require('../index');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Post = require('../models/Post');
@@ -30,8 +30,10 @@ describe('Posts API', () => {
     });
 
     afterAll(async () => {
-        await User.deleteMany();
-        await Post.deleteMany();
+        console.log("🗑️ Cleaning up test database...");
+        await User.deleteMany({});
+        await Post.deleteMany({});
+        await mongoose.connection.dropDatabase();  // Ensure full cleanup
         await mongoose.connection.close();
     });
 
@@ -41,7 +43,7 @@ describe('Posts API', () => {
             .set('Authorization', `Bearer ${token}`)
             .send({ text: 'This is a test post' });
 
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('_id');
         expect(res.body.text).toBe('This is a test post');
     });

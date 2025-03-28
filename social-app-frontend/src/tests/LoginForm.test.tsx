@@ -1,6 +1,7 @@
 // src/tests/LoginForm.test.tsx
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { act } from 'react';  
 import LoginForm from '../components/auth/LoginForm';  // Update the path as necessary
 
 test('renders login form correctly', () => {

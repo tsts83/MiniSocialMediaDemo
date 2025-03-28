@@ -28,8 +28,12 @@ jobs:
       - name: 🔧 Set Up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: 'npm'  # Speeds up dependency installation
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Manually Install @testing-library/react
+        working-directory: social-app-frontend
+        run: npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event
 
       - name: 📦 Install Dependencies
         run: |

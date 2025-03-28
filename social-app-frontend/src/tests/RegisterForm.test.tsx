@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { act } from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import RegisterForm from '../components/auth/RegisterForm';  // Update the path as necessary
 
 test('renders register form correctly', () => {

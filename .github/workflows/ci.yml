@@ -40,6 +40,10 @@ jobs:
           cd social-app-frontend
           npm install --legacy-peer-deps
 
+      - name: 🔍 Debug Installed Packages
+        working-directory: social-app-frontend
+        run: npm list --depth=0
+
       - name: 🧪 Run Tests
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}

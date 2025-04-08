@@ -68,3 +68,8 @@ For detailed API documentation, you can access the Swagger UI at:
 ```bash
 http://localhost:5002/api/api-docs
 ```
+
+# 4. Live hosted site
+The demo project is live and can be tested on the following link:
+https://mini-social-media-demo.vercel.app/
+( Hosted on Vercel )

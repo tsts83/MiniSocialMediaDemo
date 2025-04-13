@@ -1,10 +1,14 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "./store/authSlice"; // Import logout action
+import { loginSuccess, logout } from "./store/authSlice"; // Import logout action
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Feed from "./pages/Feed";
 import logo from "./assets/logo.png";
+import { useEffect } from "react";
+import axios from "axios";
+
+
 
 const AboutSection = () => {
   return (
@@ -27,6 +31,27 @@ const App = () => {
   const userToken = useSelector((state: any) => state.auth.token); // Check if user is logged in
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize navigate hook
+
+  useEffect(() => {
+    const validateToken = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await axios.get(`/api/auth/me?t=${Date.now()}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const user = response.data;
+        dispatch(loginSuccess({ user, token }));
+      } catch {
+        // Token is invalid or expired
+        dispatch(logout());
+      }
+    };
+
+    validateToken();
+  }, [dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());

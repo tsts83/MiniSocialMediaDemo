@@ -9,7 +9,9 @@ describe('Auth API', () => {
     });
 
     afterAll(async () => {
-        await User.deleteMany();  // Cleanup test users
+        console.log("🗑️ Cleaning up test database...");
+        await User.deleteMany({});
+        await mongoose.connection.dropDatabase();  // Ensure full cleanup
         await mongoose.connection.close();
     });
 

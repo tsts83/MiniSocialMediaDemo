@@ -4,12 +4,70 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
 
+function authMiddleware(req, res, next) {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Token is not valid' });
+    }
+}
 /**
  * @swagger
  * tags:
  *   name: Auth
  *   description: Authentication endpoints
  */
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get the current authenticated user's info
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user info retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: The user's ID
+ *                 username:
+ *                   type: string
+ *                   description: The user's username
+ *                 email:
+ *                   type: string
+ *                   description: The user's email
+ *       401:
+ *         description: Unauthorized - Token missing or invalid
+ *       404:
+ *         description: User not found
+ */
+// Get current user info
+router.get('/me', authMiddleware, async (req, res) => {
+    try {
+        res.set('Cache-Control', 'no-store');
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        res.json({ id: user._id, username: user.username, email: user.email });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
 
 /**
  * @swagger

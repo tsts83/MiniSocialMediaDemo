@@ -15,7 +15,7 @@ describe('Posts API', () => {
             .set('Authorization', `Bearer ${token}`)
             .send({ text: 'Isolated test post' });
 
-        console.log("🧾 Created postId:", res.body.id);
+        console.log("🧾 Created postId:", res.body._id);
         return res.body._id;
     }
 

@@ -229,4 +229,45 @@ router.post('/:id/comment', authMiddleware, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   get:
+ *     summary: Get a post by ID
+ *     tags: [Posts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Post ID
+ *     responses:
+ *       200:
+ *         description: Post found
+ *       404:
+ *         description: Post not found
+ */
+
+// Get a single post by ID
+router.get('/:id', authMiddleware, async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id)
+            .populate("user", "username")
+            .populate("comments.user", "username");
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        res.json(post);
+    } catch (error) {
+        console.error('Error fetching post by ID:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
 module.exports = router;

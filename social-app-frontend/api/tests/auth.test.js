@@ -1,52 +1,70 @@
 const request = require('supertest');
-const app = require('../index');  // Import the Express app from server.js
+const app = require('../index');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 
 describe('Auth API', () => {
-    beforeAll(async () => {
-        // No need to start the server, supertest works with app directly.
-    });
-
     afterAll(async () => {
         console.log("🗑️ Cleaning up test database...");
         await User.deleteMany({});
-        await mongoose.connection.dropDatabase();  // Ensure full cleanup
+        await mongoose.connection.dropDatabase();
         await mongoose.connection.close();
+    });
+
+    afterEach(async () => {
+        // Optional small delay if your DB needs breathing room
+        await new Promise(resolve => setTimeout(resolve, 100));
     });
 
     test('✅ Should register a user', async () => {
         const res = await request(app)
             .post('/api/auth/register')
             .send({
-                username: 'testuser',
-                email: 'testuser@example.com',
+                username: `user_${Date.now()}`,
+                email: `user_${Date.now()}@example.com`,
                 password: 'password123'
             });
 
         expect(res.status).toBe(201);
-        expect(res.body).toHaveProperty('token'); // Expect token in response
+        expect(res.body).toHaveProperty('token');
     });
 
     test('✅ Should login a user', async () => {
-        const res = await request(app)
-            .post('/api/auth/login')
-            .send({
-                email: 'testuser@example.com',
-                password: 'password123'
-            });
+        const uniqueEmail = `login_${Date.now()}@example.com`;
+        const password = 'password123';
+
+        // Register first
+        await request(app).post('/api/auth/register').send({
+            username: `loginuser_${Date.now()}`,
+            email: uniqueEmail,
+            password
+        });
+
+        // Then login
+        const res = await request(app).post('/api/auth/login').send({
+            email: uniqueEmail,
+            password
+        });
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('token');
     });
 
     test('❌ Should fail login with incorrect password', async () => {
-        const res = await request(app)
-            .post('/api/auth/login')
-            .send({
-                email: 'testuser@example.com',
-                password: 'wrongpassword'
-            });
+        const email = `fail_${Date.now()}@example.com`;
+
+        // Register user
+        await request(app).post('/api/auth/register').send({
+            username: `failuser_${Date.now()}`,
+            email,
+            password: 'correctpassword'
+        });
+
+        // Try logging in with wrong password
+        const res = await request(app).post('/api/auth/login').send({
+            email,
+            password: 'wrongpassword'
+        });
 
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('message', 'Invalid credentials');

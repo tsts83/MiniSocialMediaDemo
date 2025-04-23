@@ -77,6 +77,7 @@ describe('Posts API', () => {
 
         expect(res.status).toBe(200);
         expect(res.body.likes).toHaveLength(1);
+        
     });
 
     test('❌ Should not allow liking a post twice', async () => {

@@ -5,8 +5,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Feed from "./pages/Feed";
 import logo from "./assets/logo.png";
-import { useEffect } from "react";
 import axios from "axios";
+import flagsmith from "flagsmith";
+import { useEffect, useState } from "react"; 
 
 
 
@@ -28,27 +29,45 @@ const AboutSection = () => {
 };
 
 const App = () => {
-  const userToken = useSelector((state: any) => state.auth.token); // Check if user is logged in
+  interface RootState {
+    auth: {
+      token: string | null;
+    };
+  }
+
+  const userToken = useSelector((state: RootState) => state.auth.token); // Check if user is logged in
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize navigate hook
+
+  const [flagsReady, setFlagsReady] = useState(false);
 
   useEffect(() => {
     const validateToken = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
-
+  
       try {
         const response = await axios.get(`/api/auth/me?t=${Date.now()}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         const user = response.data;
         dispatch(loginSuccess({ user, token }));
-      } catch {
-        // Token is invalid or expired
+      } catch (error) {
+        console.error("Token validation failed:", error);
         dispatch(logout());
       }
     };
+
+    flagsmith.init({
+      environmentID: "FjtUFJg8bhVQ8TbwBLn3DC",
+      cacheFlags: true,
+      enableAnalytics: true,
+      onChange: () => {
+        console.log("Flags updated:", flagsmith.getAllFlags());
+        setFlagsReady(true);
+      },
+    });
 
     validateToken();
   }, [dispatch]);
@@ -98,8 +117,23 @@ const App = () => {
           <Route path="/feed" element={<Feed />} />
         </Routes>
       </main>
+
+            {flagsReady && flagsmith.hasFeature("widget") && (
+        <div className="contact-widget">
+          <a href="mailto:tsts83@gmail.com" className="contact-button">
+            💬 Contact Me
+          </a>
+        </div>
+      )}
+      <footer className="footer">
+        <p>© 2025 Sandor's Book. All rights reserved.</p>
+        <p>Created by Sandor</p>
+      </footer>
+
     </div>
   );
 };
+
+
 
 export default App;

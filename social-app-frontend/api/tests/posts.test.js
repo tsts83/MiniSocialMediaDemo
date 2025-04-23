@@ -5,9 +5,19 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 
 describe('Posts API', () => {
-    let server;
     let token;
     let userId;
+
+    // Helper function to create a post for each test
+    async function createTestPost(token) {
+        const res = await request(app)
+            .post('/api/posts')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ text: 'Isolated test post' });
+
+        console.log("🧾 Created postId:", res.body.id);
+        return res.body._id;
+    }
 
     beforeAll(async () => {
         // Register a test user
@@ -19,21 +29,13 @@ describe('Posts API', () => {
 
         token = userRes.body.token;
         userId = userRes.body.user._id;
-
-        // Create a post to test like and comment
-        const postRes = await request(app)
-            .post('/api/posts')
-            .set('Authorization', `Bearer ${token}`)
-            .send({ text: 'This is a test post for like and comment functionality' });
-
-        postId = postRes.body._id; // Store the post ID
     });
 
     afterAll(async () => {
-        console.log("🗑️ Cleaning up test database...");
+        console.log("🧹 Cleaning up test database...");
         await User.deleteMany({});
         await Post.deleteMany({});
-        await mongoose.connection.dropDatabase();  // Ensure full cleanup
+        await mongoose.connection.dropDatabase();
         await mongoose.connection.close();
     });
 
@@ -43,6 +45,7 @@ describe('Posts API', () => {
             .set('Authorization', `Bearer ${token}`)
             .send({ text: 'This is a test post' });
 
+        console.log("📬 Post creation response:", res.body);
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('_id');
         expect(res.body.text).toBe('This is a test post');
@@ -65,41 +68,44 @@ describe('Posts API', () => {
         expect(Array.isArray(res.body)).toBe(true);
     });
 
-    // Like a post
     test('✅ Should like a post', async () => {
+        const postId = await createTestPost(token);
+
         const res = await request(app)
             .put(`/api/posts/${postId}/like`)
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${token}`);
 
-            expect(res.status).toBe(200);
-            expect(res.body.likes).toHaveLength(1); // Post should have one like
+        expect(res.status).toBe(200);
+        expect(res.body.likes).toHaveLength(1);
     });
 
-    // Prevent liking a post twice
     test('❌ Should not allow liking a post twice', async () => {
-        await request(app) // First like (should succeed)
+        const postId = await createTestPost(token);
+
+        await request(app)
             .put(`/api/posts/${postId}/like`)
             .set('Authorization', `Bearer ${token}`);
 
-        const res = await request(app) // Second like (should fail)
+        const res = await request(app)
             .put(`/api/posts/${postId}/like`)
             .set('Authorization', `Bearer ${token}`);
 
+        console.log("🔥 Second like response:", res.body);
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('message', 'You have already liked this post');
     });
 
-     // Comment on a post
-     test('✅ Should comment on a post', async () => {
+    test('✅ Should comment on a post', async () => {
+        const postId = await createTestPost(token);
+
         const res = await request(app)
             .post(`/api/posts/${postId}/comment`)
             .set('Authorization', `Bearer ${token}`)
-            .send({ content: 'This is a test comment' });
+            .send({ text: 'This is a test comment' });
 
-        expect(res.status).toBe(201); // Created status
-        expect(res.body).toHaveProperty('_id');
-        expect(res.body.comments).toHaveLength(1); // Post should have one comment
-        expect(res.body.comments.some(comment => comment.text === "This is a test comment"));
-
+        console.log("💬 Comment response:", res.body);
+        expect(res.status).toBe(201);
+        expect(res.body.comments).toHaveLength(1);
+        expect(res.body.comments.some(comment => comment.text === "This is a test comment")).toBe(true);
     });
 });
